@@ -26,13 +26,20 @@ void ws8211_init(WS8211_t* strip, uint8_t colors[], uint16_t size) {
 	__ws8211_update(strip->colors, strip->size);
 }
 
+void ws8211_clear(WS8211_t* strip) {
+	uint16_t i;
+	for(i = 0; i < strip->size; ++i) {
+		strip->colors[i] = 0x00;
+	}
+}
+
 void ws8211_setPixel(WS8211_t* strip, uint16_t id, uint8_t r, uint8_t g, uint8_t b) {
 	//Calculate actual color offset
 	id *= 3;
 
 	//Colors stored in GRB order
-	strip->colors[id] = g;
-	strip->colors[id + 1] = r;
+	strip->colors[id] = r;
+	strip->colors[id + 1] = g;
 	strip->colors[id + 2] = b;
 }
 
@@ -45,8 +52,8 @@ void ws8211_getPixel(WS8211_t* strip, uint16_t id, uint8_t* r, uint8_t* g, uint8
 	id *= 3;
 
 	//Colors stored in GRB order
-	*g = strip->colors[id];
-	*r = strip->colors[id+1];
+	*r = strip->colors[id];
+	*g = strip->colors[id+1];
 	*b = strip->colors[id+2];
 }
 
@@ -66,12 +73,21 @@ void ws8211_shiftForward(WS8211_t* strip) {
 	ws8211_setPixel(strip, 0, r, g, b);
 }
 
+Color Color_rgb(uint8_t r, uint8_t g, uint8_t b) {
+	Color c = {r, g, b};
+
+	return c;
+}
 
 void __ws8211_update(uint8_t colors[], uint16_t count) {
 	//pixels pointer will be stored in R12
 	//count is stored in R13 by default, move to R14
 
 	//Node: P1OUT is hardware register 021h
+
+	//Disable interrupts
+	__bic_SR_register(GIE);
+
 	__asm(
 			//Initializing stuff
 			" PUSH R11;\n"					//Save R11 on the stack
@@ -425,6 +441,9 @@ void __ws8211_update(uint8_t colors[], uint16_t count) {
 			" POP R10;\n"
 			" POP R11;\n"					//Restore R11 from the stack
 	);
+
+	//Enable interrupts
+	__bis_SR_register(GIE);
 
 	//Wait >50us
 	volatile uint16_t i = 1000;

@@ -2,6 +2,9 @@
 #include <stdint.h>
 
 #include "WS8211.h"
+#include "StrangerThings.h"
+#include "Sparkle.h"
+#include "Timer.h"
 /*
  * main.c
  */
@@ -19,6 +22,8 @@ int main(void) {
     BCSCTL2 = 0;
     BCSCTL3 = 0;
 
+    Timer_init();
+
     //Configure output pin
     P1DIR |= OUT_PIN;
     P1OUT &= ~OUT_PIN;
@@ -26,8 +31,35 @@ int main(void) {
     //Initialize color array
     uint8_t colors[3 * LED_COUNT];
     WS8211_t strip;
+    SparkleEffect sparkleEffect;
 
     ws8211_init(&strip, colors, LED_COUNT);
+    Sparkle_init(&sparkleEffect, 20, LED_COUNT);
+
+    while(1) {
+    	Sparkle_update(&sparkleEffect, &strip);
+
+    	//Timer_waitMillis(10);
+    }
+
+
+   /*
+    const char* msg = "SEND NUDES ";
+    unsigned int msgLen = strlen(msg);
+
+    while(1) {
+    	static unsigned int i = 0;
+
+    	StrangerThings_display(&strip, msg, i++, 64);
+
+    	if(i >= msgLen) {
+    		i = 0;
+    	}
+
+    	//Delay
+    	uint32_t volatile j = 1000000;
+    	for(; j > 0; --j);
+    }
 
     uint16_t i;
     for(i = 0; i < LED_COUNT; i++) {
@@ -36,7 +68,7 @@ int main(void) {
 
     	ws8211_setPixel(&strip, i, r, g, b);
     }
-
+*/
 
 /*
     while(1) {
@@ -85,4 +117,23 @@ int main(void) {
 
 
 	return 0;
+}
+
+volatile uint8_t cnt = 0;
+
+#pragma vector=PORT2_VECTOR
+#pragma vector=PORT1_VECTOR
+#pragma vector=TIMER1_A1_VECTOR
+#pragma vector=TIMER1_A0_VECTOR
+#pragma vector=TIMER0_A0_VECTOR
+#pragma vector=ADC10_VECTOR
+#pragma vector=USCIAB0TX_VECTOR
+#pragma vector=WDT_VECTOR
+#pragma vector=USCIAB0RX_VECTOR
+#pragma vector=NMI_VECTOR
+#pragma vector=COMPARATORA_VECTOR
+__interrupt void TRAPINT_ISR(void)
+
+{
+	cnt++;
 }

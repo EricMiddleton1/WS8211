@@ -15,7 +15,13 @@ typedef struct {
 	uint16_t size;
 } WS8211_t;
 
+typedef struct {
+	uint8_t r, g, b;
+} Color;
+
 void ws8211_init(WS8211_t* strip, uint8_t colors[], uint16_t size);
+
+void ws8211_clear(WS8211_t* strip);
 
 void ws8211_setPixel(WS8211_t* strip, uint16_t id, uint8_t r, uint8_t g, uint8_t b);
 
@@ -25,7 +31,7 @@ void ws8211_shiftForward(WS8211_t* strip);
 
 void ws8211_update(WS8211_t* strip);
 
-
+Color Color_rgb(uint8_t, uint8_t, uint8_t);
 
 
 #endif /* WS8211_H_ */

@@ -11,6 +11,9 @@ GEN_CMDS__FLAG :=
 
 ORDERED_OBJS += \
 "./Color.obj" \
+"./Sparkle.obj" \
+"./StrangerThings.obj" \
+"./Timer.obj" \
 "./WS8211.obj" \
 "./main.obj" \
 "../lnk_msp430g2553.cmd" \
@@ -154,8 +157,8 @@ WS8211\ Controller.hex: $(EXE_OUTPUTS)
 # Other Targets
 clean:
 	-$(RM) $(EXE_OUTPUTS__QUOTED)$(BIN_OUTPUTS__QUOTED)
-	-$(RM) "Color.d" "WS8211.d" "main.d" 
-	-$(RM) "Color.obj" "WS8211.obj" "main.obj" 
+	-$(RM) "Color.d" "Sparkle.d" "StrangerThings.d" "Timer.d" "WS8211.d" "main.d" 
+	-$(RM) "Color.obj" "Sparkle.obj" "StrangerThings.obj" "Timer.obj" "WS8211.obj" "main.obj" 
 	-@echo 'Finished clean'
 	-@echo ' '
 

@@ -14,8 +14,8 @@ void Color_fromWheel(uint8_t pos, uint8_t* r, uint8_t* g, uint8_t* b) {
 
 	uint16_t widePos = pos;
 
-	int index = (int)(pos * 6 / 255) % 6, next = (index + 1) % 6;
-	float mult = 6 * pos / 255.f - index;
+	int8_t index = ((int32_t)pos * 6 / 256) % 6, next = (index + 1) % 6;
+	float mult = 6.f * pos / 255.f - index;
 
 	*r = (uint8_t)(reds[index] * (1 - mult) + reds[next] * mult);
 	*g = (uint8_t)(greens[index] * (1 - mult) + greens[next] * mult);
